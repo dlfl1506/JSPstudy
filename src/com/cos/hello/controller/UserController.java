@@ -17,14 +17,12 @@ import com.cos.hello.dao.UsersDao;
 import com.cos.hello.model.Users;
 import com.cos.hello.service.UsersService;
 
-
 // 디스패쳐의 역할 = 분기 = 필요한 view를 응답해주는것 
 public class UserController extends HttpServlet {
 
 	// req와 res는 톰캣이 만들어줍니다. (클라이언트의 요청이 있을때 마다)
 	// req는 BufferedReader 할 수 있는 ByteStream
 	// res는 BufferedWriter 할 수 있는 ByteStream
-
 	// http://localhost:8000/hello/front
 
 	@Override
@@ -46,31 +44,19 @@ public class UserController extends HttpServlet {
 		route(gubun, req, resp);
 	}
 
-	private void route(String gubun, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	private void route(String gubun, HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
 
 		UsersService usersService = new UsersService();
-		
+
 		if (gubun.equals("insertOne")) {
 			resp.sendRedirect("user/insertOne.jsp");
 		} else if (gubun.equals("selectOne")) {
 			// 인증이 필요한페이지
-			String result;
-			HttpSession session = req.getSession();
-			if (session.getAttribute("sessionUser") != null) {
-			Users user = (Users) session.getAttribute("sessionUser");
-				//System.out.println("인증되었습니다");
-				result ="인증되었습니다.";
-				System.out.println(user);
-			} else {
-				//System.out.println("인증되지 않았습니다.");
-				result="인증되지않았습니다.";
-			}
-			// resp.sendRedirect("user/selectOne.jsp");
-			req.setAttribute("result",result);
-			RequestDispatcher dis = req.getRequestDispatcher("user/selectOne.jsp");
-			dis.forward(req, resp);
+			usersService.유저정보보기(req, resp);
 		} else if (gubun.equals("updateOne")) {
-			resp.sendRedirect("user/updateOne.jsp");
+			usersService.유저정보수정페이지(req, resp);
+
 		} else if (gubun.equals("login")) {
 			resp.sendRedirect("auth/login.jsp");
 		} else if (gubun.equals("join")) {
@@ -79,7 +65,10 @@ public class UserController extends HttpServlet {
 			usersService.회원가입(req, resp);
 		} else if (gubun.equals("loginProc")) {
 			usersService.로그인(req, resp);
-			
+		}else if (gubun.equals("updateProc")) {
+			usersService.유저정보수정(req, resp);
+		}else if (gubun.equals("deleteProc")){
+			usersService.삭제(req,resp);
 		}
 	}
-		}	
+}

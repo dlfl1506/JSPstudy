@@ -14,6 +14,37 @@ import com.cos.hello.model.Users;
 
 public class UsersDao {
 
+	public Users selectById(int id) {
+		
+		StringBuffer sb = new StringBuffer();  
+		// 긴문장을 적을때는 스트링버퍼를 사용한다
+		// 스트링전용 컬렉션 
+		sb.append("SELECT id,password,username,email FROM users WHERE id = ?");
+		String sql = sb.toString();
+		Connection conn = DBConn.getInstance();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,id);
+			
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				Users userEntity = Users.builder()
+						.id(rs.getInt("id"))
+						.password(rs.getString("password"))
+						.username(rs.getString("username"))
+						.email(rs.getString("email"))
+						.build();
+				return userEntity;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return null;
+	}
+
+	
+	
 	public Users login(Users user) {
 	
 				StringBuffer sb = new StringBuffer();  
@@ -68,4 +99,56 @@ public class UsersDao {
 		}
 	return -1;
 	}
+	
+public int update(Users user) {
+		
+		// 2번 DB에 연결해서 3가지 값을 INSERT 하기
+		StringBuffer sb = new StringBuffer();  
+		// 긴문장을 적을때는 스트링버퍼를 사용한다
+		// 스트링전용 컬렉션 
+		sb.append("update users set password=? ,email=? where id=?");
+		
+		String sql = sb.toString();
+		Connection conn = DBConn.getInstance();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, user.getPassword());
+			pstmt.setString(2, user.getEmail());
+			pstmt.setInt(3, user.getId());
+			int result = pstmt.executeUpdate(); // 변경된 행의 개수를 리턴
+			
+			return result;
+		
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return -1;
+	}
+
+public int delete(int id) {
+	
+	// 2번 DB에 연결해서 3가지 값을 INSERT 하기
+	StringBuffer sb = new StringBuffer();  
+	// 긴문장을 적을때는 스트링버퍼를 사용한다
+	// 스트링전용 컬렉션 
+	sb.append("DELETE FROM users WHERE id=?");
+	
+	String sql = sb.toString();
+	Connection conn = DBConn.getInstance();
+	try {
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+	
+		pstmt.setInt(1,id);
+		int result = pstmt.executeUpdate(); // 변경된 행의 개수를 리턴
+		return result;
+
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+return -1;
+}
 }
