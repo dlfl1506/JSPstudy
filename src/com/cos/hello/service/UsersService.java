@@ -1,6 +1,7 @@
 package com.cos.hello.service;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.cos.hello.dao.UsersDao;
 import com.cos.hello.model.Users;
+import com.cos.hello.util.Script;
 
 public class UsersService {
 
@@ -18,11 +20,6 @@ public class UsersService {
 		// 1번 form의 input 태그에 있는 3가지 값 username,password,email 받기
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-
-		System.out.println("==================loginProc start ================");
-		System.out.println(username);
-		System.out.println(password);
-		System.out.println("==================loginProc End ================");
 
 		// getParameter 함수는 get방식의 데이터와 post 방식의 데이터를 다 받을 수 있음
 		// post방식에서는 데이터 타입이 x-www-form-urlencoded 방식만 받을 수 있음.
@@ -33,9 +30,12 @@ public class UsersService {
 		if (userEntity != null) {
 			HttpSession session = req.getSession(); // 세션 영역에 접근 힙메모리
 			session.setAttribute("sessionUser", userEntity);
-			resp.sendRedirect("index.jsp");
+			// 한글처리를 위해 resp 객체를 건드린다.
+			// MIME 타입
+			// Http Header 에 Content-Type
+			Script.href(resp, "index.jsp", "로그인성공");
 		} else {
-			resp.sendRedirect("auth/login.jsp");
+			Script.back(resp,"로그인실패");
 		}
 
 	}
