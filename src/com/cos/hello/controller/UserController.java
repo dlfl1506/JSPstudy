@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import com.cos.hello.config.DBConn;
 import com.cos.hello.dao.UsersDao;
 import com.cos.hello.model.Users;
+import com.cos.hello.service.UsersService;
 
 
 // 디스패쳐의 역할 = 분기 = 필요한 view를 응답해주는것 
@@ -47,6 +48,8 @@ public class UserController extends HttpServlet {
 
 	private void route(String gubun, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
+		UsersService usersService = new UsersService();
+		
 		if (gubun.equals("insertOne")) {
 			resp.sendRedirect("user/insertOne.jsp");
 		} else if (gubun.equals("selectOne")) {
@@ -73,54 +76,10 @@ public class UserController extends HttpServlet {
 		} else if (gubun.equals("join")) {
 			resp.sendRedirect("auth/join.jsp");
 		} else if (gubun.equals("joinProc")) {
-			// 데이터원형 username= ssar&password=1234&email=ssar@nate.com
-
-			// 1번 form의 input 태그에 있는 3가지 값 username,password,email 받기
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-			String email = req.getParameter("email");
-			// getParameter 함수는 get방식의 데이터와 post 방식의 데이터를 다 받을 수 있음
-			// post방식에서는 데이터 타입이 x-www-form-urlencoded 방식만 받을 수 있음.
-		
-			Users user = Users.builder()
-					.username(username)
-					.password(password)
-					.email(email)
-					.build();
-			UsersDao usersDao = new UsersDao();
-			int result = usersDao.insert(user);
-				if (result ==1) {
-				// 3번 INSERT가 정상적으로 되었다면 index.jsp를 응답!!
-				resp.sendRedirect("auth/login.jsp");
-			}else {
-				resp.sendRedirect("auth/join.jsp");
-			}
-		
-			
+			usersService.회원가입(req, resp);
 		} else if (gubun.equals("loginProc")) {
-
-			// 1번 전달되는 값 받기
-
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-			System.out.println("==================loginProc start ================");
-			System.out.println(username);
-			System.out.println(password);
-			System.out.println("==================loginProc End ================");
-			// 2번 데이터베이스 값이 있는 Select 해서 확인
-
-
-			System.out.println("로그인성공");
-			Users user = Users.builder().id(1).username(username).build();
-			// 3번
-			HttpSession session = req.getSession(); // 세션 영역에 접근 힙메모리
-			// session 에는 사용자 패스워드 절대 넣지않기
-			session.setAttribute("sessionUser", user);
-			// 모든 응답에는 jSessionid가 쿠키로 응답
-			// resp.setHeader("Set-Cookie", "sessionKey=9998");
-			// 4번 index.jsp 페이지로 이동
-			resp.sendRedirect("index.jsp");
+			usersService.로그인(req, resp);
+			
 		}
 	}
 		}	
-	
