@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Script {
 
 	public static void back(HttpServletResponse resp,String msg) throws IOException {
+		
 		PrintWriter out = resp.getWriter();
 		out.println("<script>");
 		out.println("alert('"+msg+"');");
@@ -17,6 +18,8 @@ public class Script {
 		out.flush();
 	}
 	public static void href(HttpServletResponse resp,String url,String msg) throws IOException {
+	//	resp.setHeader("Content-Type","text/html; charset=utf-8" );
+		
 		PrintWriter out = resp.getWriter();
 		out.println("<script>");
 		out.println("alert('"+msg+"');");

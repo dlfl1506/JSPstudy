@@ -38,7 +38,9 @@ public class UserController extends HttpServlet {
 
 	protected void doProcess(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("UserController 실행됨");
-
+		
+		// req.getParameter 함수 실행시에 파싱하기때문에
+		// 파싱전에 인코딩 해주어야함!!
 		String gubun = req.getParameter("gubun");
 		System.out.println(gubun);
 		route(gubun, req, resp);
@@ -46,7 +48,7 @@ public class UserController extends HttpServlet {
 
 	private void route(String gubun, HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
-
+		
 		UsersService usersService = new UsersService();
 
 		if (gubun.equals("insertOne")) {
