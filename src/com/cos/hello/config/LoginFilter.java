@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.cos.hello.dto.LoginDto;
 import com.cos.hello.model.Users;
 
 public class LoginFilter implements Filter{
@@ -32,12 +33,16 @@ public class LoginFilter implements Filter{
 			// XSS 공격 막기
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
-			
-			Users userRequest = new Users();
-			userRequest.setUsername(username);
-			userRequest.setPassword(password);
-		;
-			request.setAttribute("user", userRequest);
+		
+	
+//			Users userRequest = new Users();
+//			userRequest.setUsername(username);
+//			userRequest.setPassword(password);
+		
+			LoginDto dto = new LoginDto();
+			dto.setUsername(username);
+			dto.setPassword(password);
+			request.setAttribute("dto", dto);
 		}
 		
 		chain.doFilter(request, response);

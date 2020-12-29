@@ -9,47 +9,45 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import com.cos.hello.dto.JoinDto;
 import com.cos.hello.model.Users;
 
-
-public class JoinFilter implements Filter{
+public class JoinFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
+
 		HttpServletRequest req = (HttpServletRequest) request;
 		String gubun = req.getParameter("gubun");
-		
-		if(gubun.equals("joinProc")) {
-			if(req.getParameter("username")==null ||
-					req.getParameter("password")== null||
-					req.getParameter("email")==null || 
-					req.getParameter("username").equals("")||
-					req.getParameter("password").equals("") ||
-					req.getParameter("email").equals("")
-					) {
+
+		if (gubun.equals("joinProc")) {
+			if (req.getParameter("username") == null || req.getParameter("password") == null
+					|| req.getParameter("email") == null || req.getParameter("username").equals("")
+					|| req.getParameter("password").equals("") || req.getParameter("email").equals("")) {
 				chain.doFilter(request, response);
 				return;
 			}
-			
+
 			// XSS 공격 막기
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
 			String email = req.getParameter("email");
-			
+
 //			Users userRequest = Users.builder()
 //					.username(username)
 //					.password(password)
 //					.email(email)
 //					.build();
-			Users userRequest = new Users();
-			userRequest.setUsername(username);
-			userRequest.setPassword(password);
-			userRequest.setEmail(email);
-			request.setAttribute("user", userRequest);
+			
+			
+			JoinDto dto = new JoinDto();
+			dto.setUsername(username);
+			dto.setPassword(password);
+			dto.setEmail(email);
+			request.setAttribute("dto", dto);
 		}
-		
+
 		chain.doFilter(request, response);
 	}
 }
